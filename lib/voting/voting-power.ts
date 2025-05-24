@@ -6,12 +6,14 @@ const CACHE_TTL = 300; // 5 minutes
 
 // Conditionally import KV only if available
 let kv: any = null;
-try {
-  if (process.env.KV_URL) {
-    kv = require("@vercel/kv").kv;
-  }
-} catch (e) {
-  console.log("KV not available, running without cache");
+if (process.env.KV_URL) {
+  import("@vercel/kv")
+    .then(module => {
+      kv = module.kv;
+    })
+    .catch(() => {
+      console.log("KV not available, running without cache");
+    });
 }
 
 export async function getVotingPower(address: string, blockNumber?: number): Promise<VotingPower> {
@@ -76,7 +78,7 @@ export async function getVotingPower(address: string, blockNumber?: number): Pro
       totalPower: "0",
       breakdown: [],
       address,
-      blockNumber: blockNumber || 0
+      blockNumber: blockNumber || 0,
     };
   }
 }

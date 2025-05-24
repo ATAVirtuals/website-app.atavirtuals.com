@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getVotingPower } from "~~/lib/voting/voting-power";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ address: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ address: string }> }) {
   try {
     // Return default voting power if KV is not set up
     if (!process.env.KV_URL) {
@@ -12,7 +9,7 @@ export async function GET(
         totalPower: "0",
         breakdown: [],
         address: (await params).address,
-        blockNumber: 0
+        blockNumber: 0,
       });
     }
 
@@ -20,10 +17,7 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const blockNumber = searchParams.get("block");
 
-    const votingPower = await getVotingPower(
-      address,
-      blockNumber ? parseInt(blockNumber) : undefined
-    );
+    const votingPower = await getVotingPower(address, blockNumber ? parseInt(blockNumber) : undefined);
 
     return NextResponse.json(votingPower);
   } catch (error) {
@@ -33,7 +27,7 @@ export async function GET(
       totalPower: "0",
       breakdown: [],
       address: (await params).address,
-      blockNumber: 0
+      blockNumber: 0,
     });
   }
 }
