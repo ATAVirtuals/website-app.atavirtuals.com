@@ -26,31 +26,6 @@ interface Lock {
   id: bigint;
 }
 
-interface StatCardProps {
-  title: string;
-  value: string;
-  subtitle?: string;
-  icon: React.ElementType;
-  gradient: string;
-}
-
-const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon: Icon, gradient }) => {
-  return (
-    <div className="rounded-xl bg-base-100 border border-base-300 p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1">
-          <p className="text-xs text-base-content/60 uppercase tracking-wider mb-1">{title}</p>
-          <p className="text-xl font-bold text-base-content">{value}</p>
-          {subtitle && <p className="text-xs text-base-content/50 mt-0.5">{subtitle}</p>}
-        </div>
-        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} p-2 flex-shrink-0`}>
-          <Icon className="w-full h-full text-white" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default function StakingPage() {
   const { address, isConnected } = useAccount();
   const [stakeAmount, setStakeAmount] = useState("");
@@ -350,110 +325,75 @@ export default function StakingPage() {
   // If wallet not connected, show connection prompt with global stats
   if (!isConnected) {
     return (
-      <div className="min-h-screen p-4">
-        <div className="container mx-auto max-w-7xl">
+      <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200">
+        <div className="container mx-auto max-w-6xl px-4 py-20">
           {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 rounded-full mb-4">
-              <SparklesIcon className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium text-primary">Stake ATA • Earn Rewards</span>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-xl rounded-full mb-6">
+              <SparklesIcon className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">Stake • Earn • Govern</span>
             </div>
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              ATA Staking Platform
-            </h1>
-            <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-              Lock your ATA tokens to earn rewards and participate in governance with enhanced voting power.
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 tracking-tight">ATA Staking</h1>
+            <p className="text-xl text-base-content/60 max-w-2xl mx-auto leading-relaxed">
+              Lock your ATA tokens to earn rewards and participate in governance
             </p>
           </div>
 
           {/* Platform Stats */}
-          <div className="mb-12">
-            <h3 className="text-lg font-semibold mb-4 text-center text-base-content/70">Platform Analytics</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="col-span-2">
-                <div className="bg-base-100 rounded-xl border border-base-300 p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-xs text-base-content/60 uppercase tracking-wider mb-1">TOTAL VALUE LOCKED</p>
-                      <p className="text-3xl font-bold text-base-content">
-                        {totalValueLocked ? `${tvlPercentage}%` : "Loading..."}
-                      </p>
-                      <p className="text-sm text-base-content/50 mt-0.5">
-                        {totalValueLocked
-                          ? `${formatTokenAmount(totalValueLocked)} of 1,000,000,000 ATA`
-                          : "of total supply"}
-                      </p>
-                    </div>
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 flex-shrink-0">
-                      <LockClosedIcon className="w-full h-full text-white" />
-                    </div>
-                  </div>
-
-                  {/* Progress Bar */}
-                  <div className="mt-6">
-                    <div className="flex justify-between text-xs text-base-content/60 mb-2">
-                      <span>0%</span>
-                      <span className="font-medium">Progress to 100% Staked</span>
-                      <span>100%</span>
-                    </div>
-                    <div className="relative h-8 bg-base-300 rounded-full overflow-hidden">
-                      <div
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-3"
-                        style={{ width: `${totalValueLocked ? tvlPercentage : 0}%` }}
-                      >
-                        {parseFloat(tvlPercentage) > 10 && (
-                          <span className="text-xs font-bold text-white">{tvlPercentage}%</span>
-                        )}
-                      </div>
-                      {parseFloat(tvlPercentage) <= 10 && (
-                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-base-content/60">
-                          {tvlPercentage}%
-                        </span>
-                      )}
-                    </div>
+          <div className="mb-16">
+            <div className="bg-base-100/50 backdrop-blur-xl rounded-3xl border border-base-300/50 p-8 md:p-10 shadow-xl">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-sm text-base-content/60 mb-2">Total Value Locked</p>
+                  <p className="text-4xl md:text-5xl font-bold">
+                    {totalValueLocked ? formatTokenAmount(totalValueLocked) : "0"}
+                    <span className="text-2xl md:text-3xl font-normal text-base-content/60 ml-2">ATA</span>
+                  </p>
+                </div>
+                <div className="hidden md:block">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-xl p-4">
+                    <LockClosedIcon className="w-full h-full text-primary" />
                   </div>
                 </div>
               </div>
-              <StatCard
-                title="Network"
-                value="Base Chain"
-                subtitle="Ethereum L2"
-                icon={ShieldCheckIcon}
-                gradient="from-indigo-500 to-indigo-600"
-              />
-              <StatCard
-                title="Lock Period"
-                value={`${maxWeeks || 0} weeks`}
-                subtitle="Default duration"
-                icon={ClockIcon}
-                gradient="from-indigo-500 to-indigo-600"
-              />
+
+              {/* Progress Bar */}
+              <div>
+                <div className="flex justify-between text-sm text-base-content/60 mb-3">
+                  <span>{tvlPercentage}% of Total Supply</span>
+                  <span>1B ATA</span>
+                </div>
+                <div className="relative h-3 bg-base-300/50 rounded-full overflow-hidden">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${totalValueLocked ? tvlPercentage : 0}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Connect Wallet Card */}
           <div className="max-w-md mx-auto">
-            <div className="bg-base-200/50 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-base-300">
+            <div className="bg-base-100/50 backdrop-blur-xl rounded-3xl p-8 border border-base-300/50 shadow-xl">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 mb-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-xl mb-6">
                   <WalletIcon className="w-10 h-10 text-primary" />
                 </div>
-                <h2 className="text-3xl font-bold mb-4">Connect Your Wallet</h2>
-                <p className="text-base-content/70 mb-8">
-                  Connect your wallet to stake ATA tokens and start earning rewards.
-                </p>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3 p-4 bg-base-300/50 rounded-xl">
-                    <ShieldCheckIcon className="w-6 h-6 text-primary" />
-                    <span className="text-sm">Secure & Non-custodial</span>
+                <h2 className="text-2xl font-bold mb-4">Connect Wallet</h2>
+                <p className="text-base-content/60 mb-8">Connect your wallet to start staking ATA tokens</p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-4 bg-base-200/50 rounded-2xl">
+                    <ShieldCheckIcon className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="text-sm text-left">Secure & Non-custodial</span>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-base-300/50 rounded-xl">
-                    <ArrowTrendingUpIcon className="w-6 h-6 text-primary" />
-                    <span className="text-sm">Earn rewards through staking</span>
+                  <div className="flex items-center gap-3 p-4 bg-base-200/50 rounded-2xl">
+                    <ArrowTrendingUpIcon className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="text-sm text-left">Earn staking rewards</span>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-base-300/50 rounded-xl">
-                    <LockClosedIcon className="w-6 h-6 text-primary" />
-                    <span className="text-sm">Flexible lock periods</span>
+                  <div className="flex items-center gap-3 p-4 bg-base-200/50 rounded-2xl">
+                    <LockClosedIcon className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="text-sm text-left">Flexible lock periods</span>
                   </div>
                 </div>
               </div>
@@ -465,324 +405,312 @@ export default function StakingPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      {/* Hero Section */}
-      <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 rounded-full mb-4">
-          <SparklesIcon className="w-5 h-5 text-primary" />
-          <span className="text-sm font-medium text-primary">Stake ATA • Earn Rewards</span>
+    <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200">
+      <div className="container mx-auto max-w-6xl px-4 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 backdrop-blur-xl rounded-full mb-6">
+            <SparklesIcon className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Stake • Earn • Govern</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight">ATA Staking</h1>
+          <p className="text-lg text-base-content/60 max-w-xl mx-auto">
+            Lock your tokens to earn rewards and voting power
+          </p>
         </div>
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          ATA Staking Platform
-        </h1>
-        <p className="text-xl text-base-content/70 max-w-2xl mx-auto">
-          Lock your ATA tokens to earn rewards and participate in governance with enhanced voting power.
-        </p>
-      </div>
 
-      {/* Stats Cards - Show both personal and global stats when connected */}
-      <div className="mb-8">
-        {/* Platform Stats */}
-        <h3 className="text-lg font-semibold mb-4 text-base-content/70">Platform Analytics</h3>
-
-        {/* TVL Progress Bar Card */}
-        <div className="bg-base-100 rounded-xl border border-base-300 p-6 hover:shadow-md transition-shadow mb-6">
+        {/* TVL Progress Bar */}
+        <div className="bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg mb-8">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-xs text-base-content/60 uppercase tracking-wider mb-1">TOTAL VALUE LOCKED</p>
-              <p className="text-3xl font-bold text-base-content">
-                {totalValueLocked ? `${tvlPercentage}%` : "Loading..."}
-              </p>
-              <p className="text-sm text-base-content/50 mt-0.5">
-                {totalValueLocked ? `${formatTokenAmount(totalValueLocked)} of 1,000,000,000 ATA` : "of total supply"}
+              <p className="text-sm text-base-content/60 mb-2">Total Value Locked</p>
+              <p className="text-3xl md:text-4xl font-bold">
+                {totalValueLocked ? formatTokenAmount(totalValueLocked) : "0"}
+                <span className="text-xl md:text-2xl font-normal text-base-content/60 ml-2">ATA</span>
               </p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 flex-shrink-0">
-              <LockClosedIcon className="w-full h-full text-white" />
+            <div className="hidden md:block">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-xl p-3">
+                <LockClosedIcon className="w-full h-full text-primary" />
+              </div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-6">
-            <div className="flex justify-between text-xs text-base-content/60 mb-2">
-              <span>0%</span>
-              <span className="font-medium">Progress to 100% Staked</span>
-              <span>100%</span>
+          <div>
+            <div className="flex justify-between text-sm text-base-content/60 mb-3">
+              <span>{tvlPercentage}% of Total Supply</span>
+              <span>1B ATA</span>
             </div>
-            <div className="relative h-8 bg-base-300 rounded-full overflow-hidden">
+            <div className="relative h-3 bg-base-300/50 rounded-full overflow-hidden">
               <div
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-3"
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-out"
                 style={{ width: `${totalValueLocked ? tvlPercentage : 0}%` }}
-              >
-                {parseFloat(tvlPercentage) > 10 && (
-                  <span className="text-xs font-bold text-white">{tvlPercentage}%</span>
-                )}
-              </div>
-              {parseFloat(tvlPercentage) <= 10 && (
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-base-content/60">
-                  {tvlPercentage}%
-                </span>
-              )}
+              />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <StatCard
-            title="Network"
-            value="Base Chain"
-            subtitle="Ethereum L2"
-            icon={ShieldCheckIcon}
-            gradient="from-blue-500 to-blue-600"
-          />
-          <StatCard
-            title="Lock Period"
-            value={`${maxWeeks || 0} weeks`}
-            subtitle="Default staking duration"
-            icon={ClockIcon}
-            gradient="from-green-500 to-green-600"
-          />
-        </div>
-
-        {/* Personal Stats */}
-        <h3 className="text-lg font-semibold mb-4 text-base-content/70">Your Statistics</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            title="Wallet Balance"
-            value={tokenBalance ? `${formatTokenAmount(tokenBalance, 2)} ATA` : "0 ATA"}
-            subtitle="Available to stake"
-            icon={WalletIcon}
-            gradient="from-slate-600 to-slate-700"
-          />
-          <StatCard
-            title="Your Staked"
-            value={totalStakedAmount ? `${formatTokenAmount(totalStakedAmount, 2)} ATA` : "0 ATA"}
-            subtitle={`${positions.length} active positions`}
-            icon={BanknotesIcon}
-            gradient="from-slate-600 to-slate-700"
-          />
-          <StatCard
-            title="Voting Power"
-            value={totalStakedAmount && totalValueLocked ? `${votingPowerPercentage}%` : "0%"}
-            subtitle={
-              totalStakedAmount
-                ? `${formatTokenAmount(totalStakedAmount, 2)} ATA of total`
-                : "Your share of total staked"
-            }
-            icon={ChartBarIcon}
-            gradient="from-slate-600 to-slate-700"
-          />
-          <StatCard
-            title="Active Positions"
-            value={positions.length.toString()}
-            subtitle="Your staking positions"
-            icon={LockClosedIcon}
-            gradient="from-slate-600 to-slate-700"
-          />
-        </div>
-      </div>
-
-      {/* Check if user has any unlocked positions */}
-      {(() => {
-        const unlockedPositions = positions.filter(p => isPositionUnlocked(p));
-        const totalUnlocked = unlockedPositions.reduce((sum, p) => sum + p.amount, 0n);
-
-        return totalUnlocked > 0n ? (
-          <div className="bg-warning/20 border border-warning/50 rounded-xl p-4 mb-8">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <p className="font-semibold text-warning-content">Unstake Available</p>
-                <p className="text-sm text-base-content/70">
-                  You have {formatTokenAmount(totalUnlocked, 2)} ATA ready to unstake
-                </p>
-              </div>
-              <button className="btn btn-warning btn-sm" onClick={() => setActiveTab("positions")}>
-                View Positions
-              </button>
+        {/* User Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {/* Your Stake Card */}
+          <div className="bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm text-base-content/60">Your Stake</p>
+              <BanknotesIcon className="w-5 h-5 text-primary/60" />
             </div>
+            <p className="text-2xl font-bold mb-1">
+              {totalStakedAmount ? formatTokenAmount(totalStakedAmount, 2) : "0"}
+              <span className="text-base font-normal text-base-content/60 ml-1">ATA</span>
+            </p>
+            <p className="text-xs text-base-content/60">{positions.length} positions</p>
           </div>
-        ) : null;
-      })()}
 
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setActiveTab("stake")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-            activeTab === "stake" ? "bg-primary text-primary-content" : "bg-base-200 hover:bg-base-300"
-          }`}
-        >
-          Stake
-        </button>
-        <button
-          onClick={() => setActiveTab("positions")}
-          className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
-            activeTab === "positions" ? "bg-primary text-primary-content" : "bg-base-200 hover:bg-base-300"
-          }`}
-        >
-          Positions ({positions.length})
-        </button>
-      </div>
+          {/* Voting Power Card */}
+          <div className="bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm text-base-content/60">Voting Power</p>
+              <ChartBarIcon className="w-5 h-5 text-primary/60" />
+            </div>
+            <p className="text-2xl font-bold mb-1">
+              {votingPowerPercentage}
+              <span className="text-base font-normal text-base-content/60 ml-1">%</span>
+            </p>
+            <p className="text-xs text-base-content/60">of total staked</p>
+          </div>
+        </div>
 
-      {/* Main Content */}
-      {activeTab === "stake" ? (
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Staking Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-base-200/50 rounded-2xl p-6 border border-base-300">
-              <h2 className="text-xl font-bold mb-4">Stake ATA</h2>
+        {/* Check if user has any unlocked positions */}
+        {(() => {
+          const unlockedPositions = positions.filter(p => isPositionUnlocked(p));
+          const totalUnlocked = unlockedPositions.reduce((sum, p) => sum + p.amount, 0n);
 
-              <div className="space-y-4">
-                <div>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      placeholder="0.0"
-                      className="input input-bordered w-full text-xl font-bold pr-16 h-14"
-                      value={stakeAmount}
-                      onChange={e => {
-                        const inputValue = e.target.value;
-
-                        // Allow empty input
-                        if (!inputValue) {
-                          setStakeAmount("");
-                          return;
-                        }
-
-                        // Allow typing decimal point
-                        if (inputValue.endsWith(".") && inputValue.split(".").length === 2) {
-                          setStakeAmount(inputValue);
-                          return;
-                        }
-
-                        try {
-                          const numValue = parseFloat(inputValue);
-
-                          // If not a valid number, don't update
-                          if (isNaN(numValue)) {
-                            return;
-                          }
-
-                          // If balance is defined (even if 0), validate against it
-                          if (tokenBalance !== undefined) {
-                            const maxBalance = parseFloat(formatEther(tokenBalance));
-
-                            // If user types more than their balance, auto-correct to max
-                            if (numValue > maxBalance) {
-                              // If balance is 0, set to "0" instead of "0."
-                              setStakeAmount(maxBalance === 0 ? "0" : maxBalance.toString());
-                            } else {
-                              setStakeAmount(inputValue);
-                            }
-                          } else {
-                            // No balance data yet, just allow the input
-                            setStakeAmount(inputValue);
-                          }
-                        } catch (error) {
-                          console.error("Validation error:", error);
-                          setStakeAmount(inputValue);
-                        }
-                      }}
-                      disabled={isLoading}
-                    />
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                      <span className="font-medium text-base-content/70">ATA</span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-xs text-base-content/60">
-                      Balance: {tokenBalance ? formatTokenAmount(tokenBalance, 2) : "0"} ATA
-                    </span>
-                    <button
-                      className="text-xs text-primary hover:underline"
-                      onClick={() => setStakeAmount(tokenBalance ? formatEther(tokenBalance) : "0")}
-                    >
-                      Use Max
-                    </button>
+          return totalUnlocked > 0n ? (
+            <div className="bg-warning/10 backdrop-blur-xl border border-warning/30 rounded-2xl p-4 mb-8">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <ClockIcon className="w-5 h-5 text-warning" />
+                  <div>
+                    <p className="font-semibold text-warning">Unstake Available</p>
+                    <p className="text-sm text-base-content/70">
+                      {formatTokenAmount(totalUnlocked, 2)} ATA ready to withdraw
+                    </p>
                   </div>
                 </div>
-
-                <div className="text-sm text-base-content/60">Tokens will be locked for {maxWeeks || 0} weeks</div>
-
-                <button
-                  className="btn btn-primary w-full"
-                  onClick={needsApproval ? handleApprove : handleStake}
-                  disabled={
-                    isApproving ||
-                    isStaking ||
-                    !address ||
-                    !stakeAmount ||
-                    parseEther(stakeAmount || "0") > tokenBalance ||
-                    tokenBalance === 0n
-                  }
-                >
-                  {isApproving ? (
-                    <span className="loading loading-spinner"></span>
-                  ) : isStaking ? (
-                    <span className="loading loading-spinner"></span>
-                  ) : tokenBalance === 0n ? (
-                    <>No ATA Balance</>
-                  ) : (
-                    <>Stake ATA</>
-                  )}
+                <button className="btn btn-warning btn-sm rounded-full px-6" onClick={() => setActiveTab("positions")}>
+                  View Positions
                 </button>
               </div>
             </div>
-          </div>
+          ) : null;
+        })()}
 
-          {/* Info Panel */}
-          <div>
-            <div className="bg-base-200/50 rounded-2xl p-5 border border-base-300">
-              <h3 className="font-semibold mb-3 text-sm">Quick Info</h3>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <CheckCircleIcon className="w-4 h-4 text-success flex-shrink-0" />
-                  <span>Earn rewards & governance power</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircleIcon className="w-4 h-4 text-success flex-shrink-0" />
-                  <span>{maxWeeks || 0} week lock period</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircleIcon className="w-4 h-4 text-success flex-shrink-0" />
-                  <span>Unstake after lock expires</span>
-                </li>
-              </ul>
+        {/* Tabs */}
+        <div className="flex gap-1 p-1 bg-base-200/50 backdrop-blur-xl rounded-full w-fit mb-8">
+          <button
+            onClick={() => setActiveTab("stake")}
+            className={`px-6 py-2.5 rounded-full font-medium transition-all text-sm ${
+              activeTab === "stake"
+                ? "bg-primary text-primary-content shadow-lg"
+                : "text-base-content/60 hover:text-base-content"
+            }`}
+          >
+            Stake
+          </button>
+          <button
+            onClick={() => setActiveTab("positions")}
+            className={`px-6 py-2.5 rounded-full font-medium transition-all text-sm ${
+              activeTab === "positions"
+                ? "bg-primary text-primary-content shadow-lg"
+                : "text-base-content/60 hover:text-base-content"
+            }`}
+          >
+            Positions ({positions.length})
+          </button>
+        </div>
 
-              <div className="mt-4 pt-4 border-t border-base-300">
-                <p className="text-xs text-base-content/60 mb-2">Staking Contract</p>
-                <p className="text-xs font-mono break-all">
-                  {stakingContract.address.slice(0, 6)}...{stakingContract.address.slice(-4)}
-                </p>
+        {/* Main Content */}
+        {activeTab === "stake" ? (
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Staking Form */}
+            <div className="lg:col-span-2">
+              <div className="bg-base-100/50 backdrop-blur-xl rounded-3xl border border-base-300/50 p-6 md:p-8 shadow-xl">
+                <h2 className="text-2xl font-bold mb-6">Stake ATA</h2>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm text-base-content/60 mb-2 block">Amount</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        placeholder="0.0"
+                        className="input input-bordered w-full text-3xl font-bold bg-base-200/50 border-base-300/50 h-16 pr-20"
+                        value={stakeAmount}
+                        onChange={e => {
+                          const inputValue = e.target.value;
+
+                          // Allow empty input
+                          if (!inputValue) {
+                            setStakeAmount("");
+                            return;
+                          }
+
+                          // Allow typing decimal point
+                          if (inputValue.endsWith(".") && inputValue.split(".").length === 2) {
+                            setStakeAmount(inputValue);
+                            return;
+                          }
+
+                          try {
+                            const numValue = parseFloat(inputValue);
+
+                            // If not a valid number, don't update
+                            if (isNaN(numValue)) {
+                              return;
+                            }
+
+                            // If balance is defined (even if 0), validate against it
+                            if (tokenBalance !== undefined) {
+                              const maxBalance = parseFloat(formatEther(tokenBalance));
+
+                              // If user types more than their balance, auto-correct to max
+                              if (numValue > maxBalance) {
+                                // If balance is 0, set to "0" instead of "0."
+                                setStakeAmount(maxBalance === 0 ? "0" : maxBalance.toString());
+                              } else {
+                                setStakeAmount(inputValue);
+                              }
+                            } else {
+                              // No balance data yet, just allow the input
+                              setStakeAmount(inputValue);
+                            }
+                          } catch (error) {
+                            console.error("Validation error:", error);
+                            setStakeAmount(inputValue);
+                          }
+                        }}
+                        disabled={isLoading}
+                      />
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        <span className="text-xl font-medium text-base-content/70">ATA</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center mt-3">
+                      <span className="text-sm text-base-content/60">
+                        Balance: {tokenBalance ? formatTokenAmount(tokenBalance, 2) : "0"} ATA
+                      </span>
+                      <button
+                        className="text-sm text-primary hover:text-primary-focus transition-colors"
+                        onClick={() => setStakeAmount(tokenBalance ? formatEther(tokenBalance) : "0")}
+                      >
+                        Use Max
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-base-200/50 rounded-2xl p-4">
+                    <div className="flex items-center gap-2 text-sm">
+                      <ClockIcon className="w-4 h-4 text-base-content/60" />
+                      <span className="text-base-content/60">Lock period:</span>
+                      <span className="font-medium">{maxWeeks || 0} weeks</span>
+                    </div>
+                  </div>
+
+                  <button
+                    className="btn btn-primary w-full h-14 text-lg rounded-2xl"
+                    onClick={needsApproval ? handleApprove : handleStake}
+                    disabled={
+                      isApproving ||
+                      isStaking ||
+                      !address ||
+                      !stakeAmount ||
+                      parseEther(stakeAmount || "0") > tokenBalance ||
+                      tokenBalance === 0n
+                    }
+                  >
+                    {isApproving ? (
+                      <span className="loading loading-spinner"></span>
+                    ) : isStaking ? (
+                      <span className="loading loading-spinner"></span>
+                    ) : tokenBalance === 0n ? (
+                      <>No ATA Balance</>
+                    ) : (
+                      <>Stake ATA</>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Info Panel */}
+            <div>
+              <div className="bg-base-100/50 backdrop-blur-xl rounded-3xl border border-base-300/50 p-6 shadow-xl">
+                <h3 className="font-bold mb-4 flex items-center gap-2">
+                  <SparklesIcon className="w-5 h-5 text-primary" />
+                  Staking Benefits
+                </h3>
+                <div className="space-y-4">
+                  <div className="pl-7">
+                    <p className="font-medium text-base relative">
+                      <CheckCircleIcon className="w-5 h-5 text-success absolute -left-7 top-0.5" />
+                      Earn Rewards
+                    </p>
+                    <p className="text-sm text-base-content/60 mt-1">Get staking rewards automatically</p>
+                  </div>
+                  <div className="pl-7">
+                    <p className="font-medium text-base relative">
+                      <CheckCircleIcon className="w-5 h-5 text-success absolute -left-7 top-0.5" />
+                      Governance Power
+                    </p>
+                    <p className="text-sm text-base-content/60 mt-1">Participate in protocol decisions</p>
+                  </div>
+                  <div className="pl-7">
+                    <p className="font-medium text-base relative">
+                      <CheckCircleIcon className="w-5 h-5 text-success absolute -left-7 top-0.5" />
+                      {maxWeeks || 0} Week Lock
+                    </p>
+                    <p className="text-sm text-base-content/60 mt-1">Unlock after maturity period</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-base-300/50">
+                  <p className="text-xs text-base-content/60 mb-2">Staking Contract</p>
+                  <p className="text-xs font-mono text-base-content/80 break-all">
+                    {stakingContract.address.slice(0, 6)}...{stakingContract.address.slice(-4)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        /* Positions Tab */
-        <div className="space-y-4">
-          {positions.length === 0 ? (
-            <div className="bg-base-200/50 rounded-2xl p-8 text-center">
-              <LockClosedIcon className="w-12 h-12 text-base-content/20 mx-auto mb-3" />
-              <p className="text-base-content/60">No staking positions yet</p>
-              <button className="btn btn-primary btn-sm mt-4" onClick={() => setActiveTab("stake")}>
-                Start Staking
-              </button>
-            </div>
-          ) : (
-            <>
-              {/* Mobile-friendly card layout */}
-              <div className="space-y-3">
+        ) : (
+          /* Positions Tab */
+          <div className="space-y-4">
+            {positions.length === 0 ? (
+              <div className="bg-base-100/50 backdrop-blur-xl rounded-3xl border border-base-300/50 p-12 text-center shadow-xl">
+                <LockClosedIcon className="w-16 h-16 text-base-content/20 mx-auto mb-4" />
+                <p className="text-lg text-base-content/60 mb-6">No staking positions yet</p>
+                <button className="btn btn-primary rounded-full px-8" onClick={() => setActiveTab("stake")}>
+                  Start Staking
+                </button>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
                 {positions.map(position => {
                   const isUnlocked = isPositionUnlocked(position);
                   return (
-                    <div key={position.id.toString()} className="bg-base-200/50 rounded-xl p-4 border border-base-300">
-                      <div className="flex justify-between items-start mb-3">
+                    <div
+                      key={position.id.toString()}
+                      className="bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg hover:shadow-xl transition-shadow"
+                    >
+                      <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="text-2xl font-bold">{formatTokenAmount(position.amount, 2)} ATA</p>
+                          <p className="text-3xl font-bold mb-1">
+                            {formatTokenAmount(position.amount, 2)}
+                            <span className="text-lg font-normal text-base-content/60 ml-1">ATA</span>
+                          </p>
                           <p className="text-sm text-base-content/60">Position #{position.id.toString()}</p>
                         </div>
-                        <div className="text-right">
+                        <div>
                           {isUnlocked ? (
                             <span className="badge badge-success badge-sm">Unlocked</span>
                           ) : (
@@ -791,19 +719,25 @@ export default function StakingPage() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3 text-sm mb-3">
-                        <div>
-                          <p className="text-base-content/60">Time Remaining</p>
-                          <p className="font-medium">{getTimeRemaining(position.end)}</p>
+                      <div className="space-y-3 mb-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-base-content/60">Time Remaining</span>
+                          <span className="text-sm font-medium">{getTimeRemaining(position.end)}</span>
                         </div>
-                        <div>
-                          <p className="text-base-content/60">Unlock Date</p>
-                          <p className="font-medium">{new Date(Number(position.end) * 1000).toLocaleDateString()}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm text-base-content/60">Unlock Date</span>
+                          <span className="text-sm font-medium">
+                            {new Date(Number(position.end) * 1000).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
 
                       {isUnlocked && (
-                        <button className="btn btn-primary btn-block" onClick={() => handleWithdraw(position.id)}>
+                        <button
+                          className="btn btn-primary btn-block rounded-xl"
+                          onClick={() => handleWithdraw(position.id)}
+                          disabled={isLoading}
+                        >
                           Unstake {formatTokenAmount(position.amount, 2)} ATA
                         </button>
                       )}
@@ -811,10 +745,10 @@ export default function StakingPage() {
                   );
                 })}
               </div>
-            </>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

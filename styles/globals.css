@@ -7,8 +7,16 @@
   background: oklch(var(--b2));
 }
 
+/* Modern smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -23,12 +31,42 @@ p {
   margin: 1rem 0;
 }
 
+/* Modern button styles */
 .btn {
-  @apply shadow-md;
+  @apply shadow-md transition-all duration-200;
 }
 
 .btn.btn-ghost {
   @apply shadow-none;
+}
+
+/* Modern focus states */
+.btn:focus-visible,
+.input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-base-100;
+}
+
+/* Glass morphism utilities */
+.glass {
+  @apply bg-base-100/50 backdrop-blur-xl border border-base-300/50;
+}
+
+.glass-dark {
+  @apply bg-base-200/50 backdrop-blur-xl border border-base-300/50;
+}
+
+/* Modern card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5;
+}
+
+/* Smooth transitions for all interactive elements */
+input,
+button,
+a {
+  @apply transition-colors duration-200;
 }
 
 .text-shadow {
