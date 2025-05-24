@@ -8,7 +8,7 @@ import VotingPowerDisplay from "~~/components/voting/VotingPowerDisplay";
 import { useGetTotalValueLocked } from "~~/hooks/scaffold-eth";
 import { ProposalWithResults, VotingPower } from "~~/lib/voting/types";
 
-const ADMIN_ADDRESS = "0xF5512860735795994bB45e4DdeBE7686241167aD";
+const ADMIN_ADDRESS = process.env.NEXT_PUBLIC_VOTING_ADMIN_ADDRESS || "0xF5512860735795994bB45e4DdeBE7686241167aD";
 
 export default function VotingPage() {
   const { address, isConnected } = useAccount();
