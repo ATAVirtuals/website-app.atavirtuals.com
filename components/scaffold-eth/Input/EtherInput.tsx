@@ -6,33 +6,30 @@ import { useGlobalState } from "~~/services/store/store";
 
 const MAX_DECIMALS_USD = 2;
 
-function etherValueToDisplayValue(usdMode: boolean, etherValue: string, nativeCurrencyPrice: number) {
-  if (usdMode && nativeCurrencyPrice) {
+function etherValueToDisplayValue(usdMode: boolean, etherValue: string, ataPrice: number) {
+  if (usdMode && ataPrice) {
     const parsedEthValue = parseFloat(etherValue);
     if (Number.isNaN(parsedEthValue)) {
       return etherValue;
     } else {
       // We need to round the value rather than use toFixed,
       // since otherwise a user would not be able to modify the decimal value
-      return (
-        Math.round(parsedEthValue * nativeCurrencyPrice * 10 ** MAX_DECIMALS_USD) /
-        10 ** MAX_DECIMALS_USD
-      ).toString();
+      return (Math.round(parsedEthValue * ataPrice * 10 ** MAX_DECIMALS_USD) / 10 ** MAX_DECIMALS_USD).toString();
     }
   } else {
     return etherValue;
   }
 }
 
-function displayValueToEtherValue(usdMode: boolean, displayValue: string, nativeCurrencyPrice: number) {
-  if (usdMode && nativeCurrencyPrice) {
+function displayValueToEtherValue(usdMode: boolean, displayValue: string, ataPrice: number) {
+  if (usdMode && ataPrice) {
     const parsedDisplayValue = parseFloat(displayValue);
     if (Number.isNaN(parsedDisplayValue)) {
       // Invalid number.
       return displayValue;
     } else {
       // Compute the ETH value if a valid number.
-      return (parsedDisplayValue / nativeCurrencyPrice).toString();
+      return (parsedDisplayValue / ataPrice).toString();
     }
   } else {
     return displayValue;
@@ -53,22 +50,22 @@ export const EtherInput = ({
   usdMode,
 }: CommonInputProps & { usdMode?: boolean }) => {
   const [transitoryDisplayValue, setTransitoryDisplayValue] = useState<string>();
-  const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrency.price);
-  const isNativeCurrencyPriceFetching = useGlobalState(state => state.nativeCurrency.isFetching);
+  const ataPrice = useGlobalState(state => state.ata.price);
+  const isataPriceFetching = useGlobalState(state => state.ata.isFetching);
 
   const { displayUsdMode, toggleDisplayUsdMode } = useDisplayUsdMode({ defaultUsdMode: usdMode });
 
   // The displayValue is derived from the ether value that is controlled outside of the component
   // In usdMode, it is converted to its usd value, in regular mode it is unaltered
   const displayValue = useMemo(() => {
-    const newDisplayValue = etherValueToDisplayValue(displayUsdMode, value, nativeCurrencyPrice || 0);
+    const newDisplayValue = etherValueToDisplayValue(displayUsdMode, value, ataPrice || 0);
     if (transitoryDisplayValue && parseFloat(newDisplayValue) === parseFloat(transitoryDisplayValue)) {
       return transitoryDisplayValue;
     }
     // Clear any transitory display values that might be set
     setTransitoryDisplayValue(undefined);
     return newDisplayValue;
-  }, [nativeCurrencyPrice, transitoryDisplayValue, displayUsdMode, value]);
+  }, [ataPrice, transitoryDisplayValue, displayUsdMode, value]);
 
   const handleChangeNumber = (newValue: string) => {
     if (newValue && !SIGNED_NUMBER_REGEX.test(newValue)) {
@@ -92,7 +89,7 @@ export const EtherInput = ({
       setTransitoryDisplayValue(undefined);
     }
 
-    const newEthValue = displayValueToEtherValue(displayUsdMode, newValue, nativeCurrencyPrice || 0);
+    const newEthValue = displayValueToEtherValue(displayUsdMode, newValue, ataPrice || 0);
     onChange(newEthValue);
   };
 
@@ -103,20 +100,20 @@ export const EtherInput = ({
       placeholder={placeholder}
       onChange={handleChangeNumber}
       disabled={disabled}
-      prefix={<span className="pl-4 -mr-2 text-accent self-center">{displayUsdMode ? "$" : "Ξ"}</span>}
+      prefix={<span className="pl-4 -mr-2 text-accent self-center">{displayUsdMode ? "$" : "ATA"}</span>}
       suffix={
         <div
           className={`${
-            nativeCurrencyPrice > 0
+            ataPrice > 0
               ? ""
               : "tooltip tooltip-secondary before:content-[attr(data-tip)] before:right-[-10px] before:left-auto before:transform-none"
           }`}
-          data-tip={isNativeCurrencyPriceFetching ? "Fetching price" : "Unable to fetch price"}
+          data-tip={isataPriceFetching ? "Fetching price" : "Unable to fetch price"}
         >
           <button
             className="btn btn-primary h-[2.2rem] min-h-[2.2rem]"
             onClick={toggleDisplayUsdMode}
-            disabled={!displayUsdMode && !nativeCurrencyPrice}
+            disabled={!displayUsdMode && !ataPrice}
             type="button"
           >
             <ArrowsRightLeftIcon className="h-3 w-3 cursor-pointer" aria-hidden="true" />

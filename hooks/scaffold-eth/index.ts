@@ -2,6 +2,7 @@ export * from "./useAnimationConfig";
 export * from "./useContractLogs";
 export * from "./useDeployedContractInfo";
 export * from "./useFetchBlocks";
+export * from "./useInitializeAtaPrice";
 export * from "./useInitializeNativeCurrencyPrice";
 export * from "./useNetworkColor";
 export * from "./useOutsideClick";
