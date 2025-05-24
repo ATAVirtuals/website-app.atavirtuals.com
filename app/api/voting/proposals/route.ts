@@ -54,12 +54,16 @@ export async function GET() {
   }
 }
 
+const ADMIN_ADDRESS = "0xF5512860735795994bB45e4DdeBE7686241167aD";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // TODO: Add authentication check for admin users
-    // For now, you could check if the creator holds a certain amount of tokens
+    // Check if creator is admin
+    if (!body.creator || body.creator.toLowerCase() !== ADMIN_ADDRESS.toLowerCase()) {
+      return NextResponse.json({ error: "Only admin can create proposals" }, { status: 403 });
+    }
 
     // Validate required fields
     if (!body.title || !body.options || body.options.length < 2) {
@@ -70,9 +74,10 @@ export async function POST(request: NextRequest) {
     const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
     const currentBlock = await provider.getBlockNumber();
 
-    // Set default voting period (7 days) if not provided
-    const votingStart = body.votingStart || new Date();
-    const votingEnd = body.votingEnd || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    // Set voting period based on votingDays
+    const votingStart = new Date();
+    const votingDays = body.votingDays || 7;
+    const votingEnd = new Date(Date.now() + votingDays * 24 * 60 * 60 * 1000);
 
     const { rows } = await sql`
       INSERT INTO proposals (
@@ -83,7 +88,7 @@ export async function POST(request: NextRequest) {
         ${body.description || ""},
         ${body.options},
         ${body.category || "general"},
-        ${body.createdBy},
+        ${body.creator},
         ${currentBlock},
         ${votingStart},
         ${votingEnd}
