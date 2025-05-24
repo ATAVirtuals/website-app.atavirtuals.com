@@ -30,11 +30,11 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/staking",
     //icon: <CakeIcon className="h-4 w-4" />,
   },
-  {
-    label: "Voting",
-    href: "/voting",
-    //icon: <ChartBarIcon className="h-4 w-4" />,
-  },
+  // {
+  //   label: "Voting",
+  //   href: "/voting",
+  //   //icon: <ChartBarIcon className="h-4 w-4" />,
+  // },
   // Only show Debug menu item in development
   ...(process.env.NODE_ENV !== "production"
     ? [
