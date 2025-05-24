@@ -6,8 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bars3Icon,
-  BugAntIcon,
-  ChartBarIcon, // // GiftIcon,
+  BugAntIcon, // ChartBarIcon, // // GiftIcon,
   // // MapIcon,
   // QuestionMarkCircleIcon,
   // UsersIcon,
@@ -34,7 +33,7 @@ export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Voting",
     href: "/voting",
-    icon: <ChartBarIcon className="h-4 w-4" />,
+    //icon: <ChartBarIcon className="h-4 w-4" />,
   },
   // Only show Debug menu item in development
   ...(process.env.NODE_ENV !== "production"
