@@ -1,5 +1,21 @@
 {
-  "name": "ATA",
-  "description": "A DApp built with Scaffold-ETH",
-  "iconPath": "logo.jpg"
+  "name": "ATA Virtuals",
+  "short_name": "ATA",
+  "description": "Stake ATA tokens to earn rewards and participate in governance with enhanced voting power",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1F2937",
+  "theme_color": "#7C3AED",
+  "icons": [
+    {
+      "src": "/favicon.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
 }
