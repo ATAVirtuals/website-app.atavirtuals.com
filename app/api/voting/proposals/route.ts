@@ -5,6 +5,11 @@ import { ProposalWithResults } from "~~/lib/voting/types";
 
 export async function GET() {
   try {
+    // Return empty array if database is not set up
+    if (!process.env.POSTGRES_URL) {
+      return NextResponse.json([]);
+    }
+
     const { rows } = await sql`
       SELECT 
         p.*,

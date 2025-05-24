@@ -10,7 +10,11 @@ interface VotingPowerDisplayProps {
 }
 
 export default function VotingPowerDisplay({ power, className = "" }: VotingPowerDisplayProps) {
-  const formattedPower = formatEther(BigInt(power.totalPower));
+  if (!power || !power.totalPower) {
+    return null; // Don't render if no power data
+  }
+
+  const formattedPower = formatEther(BigInt(power.totalPower || "0"));
 
   return (
     <div className={`bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg ${className}`}>
@@ -24,11 +28,11 @@ export default function VotingPowerDisplay({ power, className = "" }: VotingPowe
           {Number(formattedPower).toLocaleString()}
           <span className="text-lg font-normal text-base-content/60 ml-2">votes</span>
         </p>
-        <p className="text-sm text-base-content/60 mt-1">Block #{power.blockNumber}</p>
+        <p className="text-sm text-base-content/60 mt-1">Block #{power?.blockNumber || 0}</p>
       </div>
 
       {/* Breakdown */}
-      {power.breakdown.length > 0 && (
+      {power?.breakdown && power.breakdown.length > 0 && (
         <div className="space-y-2">
           <p className="text-sm font-medium text-base-content/80 mb-2">Position Breakdown:</p>
           {power.breakdown.map((position, index) => (

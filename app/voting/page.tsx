@@ -38,9 +38,11 @@ export default function VotingPage() {
     try {
       const res = await fetch("/api/voting/proposals");
       const data = await res.json();
-      setProposals(data);
+      // Ensure we have an array even if API returns error
+      setProposals(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch proposals:", error);
+      setProposals([]);
     } finally {
       setLoading(false);
     }

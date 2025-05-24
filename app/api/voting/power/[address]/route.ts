@@ -6,6 +6,16 @@ export async function GET(
   { params }: { params: Promise<{ address: string }> }
 ) {
   try {
+    // Return default voting power if KV is not set up
+    if (!process.env.KV_URL) {
+      return NextResponse.json({
+        totalPower: "0",
+        breakdown: [],
+        address: (await params).address,
+        blockNumber: 0
+      });
+    }
+
     const { address } = await params;
     const { searchParams } = new URL(request.url);
     const blockNumber = searchParams.get("block");
@@ -18,6 +28,12 @@ export async function GET(
     return NextResponse.json(votingPower);
   } catch (error) {
     console.error("Failed to get voting power:", error);
-    return NextResponse.json({ error: "Failed to get voting power" }, { status: 500 });
+    // Return default voting power on error
+    return NextResponse.json({
+      totalPower: "0",
+      breakdown: [],
+      address: (await params).address,
+      blockNumber: 0
+    });
   }
 }
