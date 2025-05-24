@@ -393,7 +393,7 @@ export default function StakingPage() {
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-base-200/50 rounded-2xl">
                     <LockClosedIcon className="w-5 h-5 text-primary flex-shrink-0" />
-                    <span className="text-sm text-left">Flexible lock periods</span>
+                    <span className="text-sm text-left">2 week lock periods</span>
                   </div>
                 </div>
               </div>
