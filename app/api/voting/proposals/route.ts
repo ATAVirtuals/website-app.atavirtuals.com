@@ -90,8 +90,8 @@ export async function POST(request: NextRequest) {
         ${body.category || "general"},
         ${body.creator},
         ${currentBlock},
-        ${votingStart},
-        ${votingEnd}
+        ${votingStart.toISOString()},
+        ${votingEnd.toISOString()}
       )
       RETURNING *
     `;

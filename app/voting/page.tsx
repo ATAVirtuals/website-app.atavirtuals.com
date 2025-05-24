@@ -60,82 +60,80 @@ export default function VotingPage() {
   const pastProposals = proposals.filter(p => p.status === "ended");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200">
-      <div className="container mx-auto max-w-6xl px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold mb-4">ATA Voting</h1>
-          <p className="text-lg text-base-content/60">Vote on feature requests and development priorities</p>
-        </div>
+    <>
+      <div className="min-h-screen bg-gradient-to-b from-base-100 to-base-200">
+        <div className="container mx-auto max-w-6xl px-4 py-12">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold mb-4">ATA Voting</h1>
+            <p className="text-lg text-base-content/60">Vote on feature requests and development priorities</p>
+          </div>
 
-        {/* Voting Power Display */}
-        {isConnected && votingPower && (
-          <VotingPowerDisplay power={votingPower} totalValueLocked={totalValueLocked} className="mb-8" />
-        )}
+          {/* Voting Power Display */}
+          {isConnected && votingPower && (
+            <VotingPowerDisplay power={votingPower} totalValueLocked={totalValueLocked} className="mb-8" />
+          )}
 
-        {/* Active Proposals */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Active Proposals</h2>
-            {isAdmin && (
-              <button
-                className="btn btn-primary btn-sm gap-2"
-                onClick={() => setShowCreateModal(true)}
-              >
-                <PlusIcon className="w-4 h-4" />
-                Create Proposal
-              </button>
+          {/* Active Proposals */}
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Active Proposals</h2>
+              {isAdmin && (
+                <button className="btn btn-primary btn-sm gap-2" onClick={() => setShowCreateModal(true)}>
+                  <PlusIcon className="w-4 h-4" />
+                  Create Proposal
+                </button>
+              )}
+            </div>
+
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="skeleton h-32 w-full"></div>
+                ))}
+              </div>
+            ) : activeProposals.length > 0 ? (
+              <div className="grid gap-6">
+                {activeProposals.map(proposal => (
+                  <ProposalCard
+                    key={proposal.id}
+                    proposal={proposal}
+                    votingPower={votingPower}
+                    onVote={() => {
+                      fetchProposals();
+                      if (address) fetchVotingPower();
+                    }}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-base-100/50 rounded-2xl">
+                <p className="text-base-content/60">No active proposals</p>
+              </div>
             )}
           </div>
 
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="skeleton h-32 w-full"></div>
-              ))}
-            </div>
-          ) : activeProposals.length > 0 ? (
-            <div className="grid gap-6">
-              {activeProposals.map(proposal => (
-                <ProposalCard
-                  key={proposal.id}
-                  proposal={proposal}
-                  votingPower={votingPower}
-                  onVote={() => {
-                    fetchProposals();
-                    if (address) fetchVotingPower();
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 bg-base-100/50 rounded-2xl">
-              <p className="text-base-content/60">No active proposals</p>
+          {/* Past Proposals */}
+          {pastProposals.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Past Proposals</h2>
+              <div className="grid gap-6">
+                {pastProposals.map(proposal => (
+                  <ProposalCard key={proposal.id} proposal={proposal} votingPower={votingPower} onVote={() => {}} />
+                ))}
+              </div>
             </div>
           )}
         </div>
-
-        {/* Past Proposals */}
-        {pastProposals.length > 0 && (
-          <div>
-            <h2 className="text-2xl font-bold mb-6">Past Proposals</h2>
-            <div className="grid gap-6">
-              {pastProposals.map(proposal => (
-                <ProposalCard key={proposal.id} proposal={proposal} votingPower={votingPower} onVote={() => {}} />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
-    </div>
 
-    {/* Create Proposal Modal */}
-    {showCreateModal && (
+      {/* Create Proposal Modal */}
+      {showCreateModal && (
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg mb-4">Create New Proposal</h3>
             <form
-              onSubmit={async (e) => {
+              onSubmit={async e => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
                 const title = formData.get("title") as string;
@@ -156,7 +154,10 @@ export default function VotingPage() {
                     body: JSON.stringify({
                       title,
                       description,
-                      options: options.split("\n").map(o => o.trim()).filter(o => o),
+                      options: options
+                        .split("\n")
+                        .map(o => o.trim())
+                        .filter(o => o),
                       votingDays: parseInt(days),
                       creator: address,
                     }),
@@ -169,7 +170,7 @@ export default function VotingPage() {
                     const error = await res.text();
                     alert(`Failed to create proposal: ${error}`);
                   }
-                } catch (error) {
+                } catch {
                   alert("Failed to create proposal");
                 } finally {
                   setCreating(false);
@@ -229,19 +230,10 @@ export default function VotingPage() {
               </div>
 
               <div className="modal-action">
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => setShowCreateModal(false)}
-                  disabled={creating}
-                >
+                <button type="button" className="btn" onClick={() => setShowCreateModal(false)} disabled={creating}>
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={creating}
-                >
+                <button type="submit" className="btn btn-primary" disabled={creating}>
                   {creating ? <span className="loading loading-spinner"></span> : "Create"}
                 </button>
               </div>
