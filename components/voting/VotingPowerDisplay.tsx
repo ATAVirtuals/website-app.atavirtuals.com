@@ -6,15 +6,22 @@ import { VotingPower } from "~~/lib/voting/types";
 
 interface VotingPowerDisplayProps {
   power: VotingPower;
+  totalValueLocked?: bigint;
   className?: string;
 }
 
-export default function VotingPowerDisplay({ power, className = "" }: VotingPowerDisplayProps) {
+export default function VotingPowerDisplay({ power, totalValueLocked, className = "" }: VotingPowerDisplayProps) {
   if (!power || !power.totalPower) {
     return null; // Don't render if no power data
   }
 
   const formattedPower = formatEther(BigInt(power.totalPower || "0"));
+
+  // Calculate voting power percentage (same as staking page)
+  const votingPowerPercentage =
+    totalValueLocked && power.totalPower
+      ? ((Number(power.totalPower) / Number(totalValueLocked)) * 100).toFixed(4)
+      : "0";
 
   return (
     <div className={`bg-base-100/50 backdrop-blur-xl rounded-2xl border border-base-300/50 p-6 shadow-lg ${className}`}>
@@ -28,7 +35,15 @@ export default function VotingPowerDisplay({ power, className = "" }: VotingPowe
           {Number(formattedPower).toLocaleString()}
           <span className="text-lg font-normal text-base-content/60 ml-2">votes</span>
         </p>
-        <p className="text-sm text-base-content/60 mt-1">Block #{power?.blockNumber || 0}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-sm text-base-content/60">Block #{power?.blockNumber || 0}</p>
+          {totalValueLocked && (
+            <>
+              <span className="text-base-content/40">•</span>
+              <p className="text-sm text-primary font-medium">{votingPowerPercentage}% of total</p>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Breakdown */}

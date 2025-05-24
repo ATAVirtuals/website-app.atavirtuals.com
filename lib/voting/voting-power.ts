@@ -29,34 +29,17 @@ export async function getVotingPower(address: string, blockNumber?: number): Pro
   }
 
   try {
-    // Get positions from contract
+    // Get staked amount from contract (same as staking page)
     const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
     const stakingContract = externalContracts[8453].stakedToken;
     const contract = new ethers.Contract(stakingContract.address, stakingContract.abi, provider);
 
-    const numPositions = await contract.numPositions(address);
-    const positions = await contract.getPositions(address, 0, numPositions);
-
-    // Calculate voting power with multipliers
-    let totalPower = 0n;
-    const breakdown = [];
-
-    for (const position of positions) {
-      const multiplier = getMultiplier(position.numWeeks);
-      const power = (position.amount * BigInt(multiplier)) / 10000n;
-      totalPower += power;
-
-      breakdown.push({
-        amount: position.amount.toString(),
-        weeks: position.numWeeks,
-        multiplier: multiplier / 10000,
-        power: power.toString(),
-      });
-    }
+    // Get total staked amount for user (same as staking page)
+    const stakedAmount = await contract.stakedAmountOf(address);
 
     const result = {
-      totalPower: totalPower.toString(),
-      breakdown,
+      totalPower: stakedAmount.toString(),
+      breakdown: [], // We can still fetch positions if needed for display
       address,
       blockNumber: blockNumber || (await provider.getBlockNumber()),
     };
@@ -81,13 +64,6 @@ export async function getVotingPower(address: string, blockNumber?: number): Pro
       blockNumber: blockNumber || 0,
     };
   }
-}
-
-function getMultiplier(weeks: number): number {
-  if (weeks >= 12) return 20000; // 2.0x
-  if (weeks >= 8) return 15000; // 1.5x
-  if (weeks >= 4) return 12500; // 1.25x
-  return 10000; // 1.0x (base)
 }
 
 // Clear cache when staking positions change

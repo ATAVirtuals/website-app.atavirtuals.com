@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import ProposalCard from "~~/components/voting/ProposalCard";
 import VotingPowerDisplay from "~~/components/voting/VotingPowerDisplay";
+import { useGetTotalValueLocked } from "~~/hooks/scaffold-eth";
 import { ProposalWithResults, VotingPower } from "~~/lib/voting/types";
 
 export default function VotingPage() {
@@ -12,6 +13,7 @@ export default function VotingPage() {
   const [proposals, setProposals] = useState<ProposalWithResults[]>([]);
   const [votingPower, setVotingPower] = useState<VotingPower | null>(null);
   const [loading, setLoading] = useState(true);
+  const { totalValueLocked } = useGetTotalValueLocked();
 
   useEffect(() => {
     fetchProposals();
@@ -61,7 +63,9 @@ export default function VotingPage() {
         </div>
 
         {/* Voting Power Display */}
-        {isConnected && votingPower && <VotingPowerDisplay power={votingPower} className="mb-8" />}
+        {isConnected && votingPower && (
+          <VotingPowerDisplay power={votingPower} totalValueLocked={totalValueLocked} className="mb-8" />
+        )}
 
         {/* Active Proposals */}
         <div className="mb-12">
